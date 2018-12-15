@@ -137,3 +137,35 @@ export const GET_USER_RC = gql`
     }
   }
 `;
+export const GET_REPOS_COMMITS = gql`
+  {
+    viewer {
+      repositories(last: 31) {
+        nodes {
+          primaryLanguage {
+            name
+            color
+          }
+          languages(last: 31) {
+            nodes {
+              name
+            }
+            totalCount
+          }
+
+          defaultBranchRef {
+            target {
+              ... on Commit {
+                history {
+                  totalCount
+                }
+                pushedDate
+              }
+            }
+          }
+        }
+        totalCount
+      }
+    }
+  }
+`;

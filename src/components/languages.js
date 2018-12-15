@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ApolloClient from "apollo-boost";
+
 import Chart from "chart.js";
 import _ from "lodash";
 import { withStyles } from "@material-ui/core/styles";
@@ -8,22 +8,6 @@ import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import { Query } from "react-apollo";
 import { GET_USER_RC } from "../models/gqlQueries";
-
-// import PropTypes from "prop-types";
-
-const client = new ApolloClient({
-  uri: "https://api.github.com/graphql",
-  request: operation => {
-    const { REACT_APP_GITHUB_TOKEN } = process.env;
-
-    operation.setContext(context => ({
-      headers: {
-        ...context.headers,
-        Authorization: `Bearer ${REACT_APP_GITHUB_TOKEN}`
-      }
-    }));
-  }
-});
 
 class Languages extends Component {
   constructor(props) {
@@ -45,7 +29,6 @@ class Languages extends Component {
           if (loading) {
             return <span>WAIT</span>;
           }
-          console.log(data.viewer);
 
           let repositories = data.viewer.repositories.nodes;
           let languages = [];
@@ -64,12 +47,9 @@ class Languages extends Component {
               nbLine.map(element => {
                 let diff = element.additions - element.deletions;
                 ress = ress + diff;
-                console.log(diff);
               });
-              console.log("tooooooz");
-              console.log(nbLineLanguage, languages);
+
               nbLineLanguage.push(ress);
-              console.log("reetoooz");
             } else {
               let id = languages.indexOf(`${oneRepos.primaryLanguage.name}`);
               numberOfCommitLanguages[id] =
@@ -80,20 +60,12 @@ class Languages extends Component {
               nbLine.map(element => {
                 let diff = element.additions - element.deletions;
                 ress = ress + diff;
-                console.log(diff);
               });
-              console.log("tooooooz");
-              console.log(ress);
+
               nbLineLanguage[id] = nbLineLanguage[id] + ress;
-              console.log("reetoooz");
             }
           });
-          console.log(
-            numberOfCommitLanguages,
-            languages,
-            color,
-            nbLineLanguage
-          );
+
           setTimeout(function() {
             new Chart(document.getElementById("pie-chart"), {
               type: "pie",
@@ -132,20 +104,17 @@ class Languages extends Component {
                 <br />
                 {languages.map((language, i) => {
                   return (
-                    <Grid
-                      className={classes.grid}
-                      styles={{ color: "red" }}
-                      item
-                      xs={3}
-                    >
-                      <Paper className={classes.paper}>{language}</Paper>
-                      <Divider variant="middle" />
+                    <Grid className={classes.grid} item xs={3}>
                       <Paper className={classes.paper}>
-                        commits :{numberOfCommitLanguages[i]}
+                        Language : <strong>{language}</strong>
                       </Paper>
                       <Divider variant="middle" />
                       <Paper className={classes.paper}>
-                        line Of Code :{nbLineLanguage[i]}
+                        commits : <strong>{numberOfCommitLanguages[i]}</strong>
+                      </Paper>
+                      <Divider variant="middle" />
+                      <Paper className={classes.paper} justify="center">
+                        line Of Code : <strong>{nbLineLanguage[i]}</strong>
                       </Paper>
                     </Grid>
                   );
@@ -216,8 +185,9 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    height: "10%",
+    height: "30%",
     color: theme.palette.text.secondary
+    // marginBottom: 20
   }
 });
 // export default ;

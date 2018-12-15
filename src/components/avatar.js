@@ -1,28 +1,11 @@
 import React, { Component } from "react";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider, Query } from "react-apollo";
+import { Query } from "react-apollo";
 import Paper from "@material-ui/core/Paper";
-import gql from "graphql-tag";
-// import styles from "./styles.less";
 import { Card } from "antd";
 import { withStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
-import { GET_USER_INFO, USER_GET_REPO } from "../models/gqlQueries";
-
-const client = new ApolloClient({
-  uri: "https://api.github.com/graphql",
-  request: operation => {
-    const { REACT_APP_GITHUB_TOKEN } = process.env;
-
-    operation.setContext(context => ({
-      headers: {
-        ...context.headers,
-        Authorization: `Bearer ${REACT_APP_GITHUB_TOKEN}`
-      }
-    }));
-  }
-});
+import { GET_USER_INFO } from "../models/gqlQueries";
 
 class AvatarComp extends Component {
   constructor(props) {
