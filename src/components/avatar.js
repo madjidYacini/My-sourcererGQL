@@ -27,7 +27,6 @@ class AvatarComp extends Component {
           if (loading) {
             return <span>WAIT</span>;
           }
-          console.log(data.viewer.avatarUrl);
           const avatar = data.viewer.avatarUrl;
           const followers = data.viewer.followers.totalCount;
           const following = data.viewer.following.totalCount;
