@@ -169,3 +169,41 @@ export const GET_REPOS_COMMITS = gql`
     }
   }
 `;
+
+export const GET_ALL_REPO_PAGINATION_GIHUB = gql`
+  query($cursor: String, $login: String!, $prev: String) {
+    user(login: $login) {
+      name
+      repositories(privacy: PUBLIC, first: 5, after: $cursor, before: $prev) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          endCursor
+          startCursor
+        }
+        nodes {
+          defaultBranchRef {
+            name
+            target {
+              ... on Commit {
+                history {
+                  totalCount
+                  nodes {
+                    additions
+                    deletions
+                  }
+                }
+              }
+            }
+          }
+          name
+          primaryLanguage {
+            color
+            name
+          }
+        }
+      }
+    }
+  }
+`;

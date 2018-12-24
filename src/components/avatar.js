@@ -8,24 +8,13 @@ import Grid from "@material-ui/core/Grid";
 import { GET_USER_INFO } from "../models/gqlQueries";
 
 class AvatarComp extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: {},
-      totalRepos: null,
-      commits: null,
-      followers: null,
-      following: null
-    };
-  }
-
   render() {
     const { classes } = this.props;
     return (
       <Query query={GET_USER_INFO}>
         {({ loading, error, data }) => {
           if (loading) {
-            return <span>WAIT</span>;
+            return <span> </span>;
           }
           const avatar = data.viewer.avatarUrl;
           const followers = data.viewer.followers.totalCount;
@@ -35,17 +24,14 @@ class AvatarComp extends Component {
           const login = data.viewer.login;
           let nbOfCommits = 0;
           let lineOfCode = 0;
-          repositories.map(oneRepo => {
+          for (let oneRepo of repositories) {
             let lOC = oneRepo.defaultBranchRef.target.history.nodes;
-            lOC.map(addDel => {
-              let diff = addDel.additions - addDel.deletions;
+            for (let line of lOC) {
+              let diff = line.additions - line.deletions;
               lineOfCode = lineOfCode + diff;
-            });
+            }
             nbOfCommits = nbOfCommits + oneRepo.ref.target.history.totalCount;
-          });
-
-          console.log("this is line of code", lineOfCode);
-
+          }
           return (
             <Card
               className={styles.numberCard}
@@ -56,7 +42,22 @@ class AvatarComp extends Component {
               <div className={styles.content}>
                 <Grid container spacing={24} style={{ marginBottom: "40px" }}>
                   <Grid item xs={12} justify="center" className={classes.Name}>
-                    <h1 className={styles.title}>{login}</h1>
+                    <h1
+                      style={{
+                        textAlign: "center",
+                        fontFamily: "serif",
+                        marginBottom: "20px"
+                      }}
+                    >
+                      Profile
+                    </h1>
+
+                    <h2
+                      className={styles.title}
+                      style={{ textAlign: "center", fontFamily: "serif" }}
+                    >
+                      {login}
+                    </h2>
                   </Grid>
 
                   <Grid item xs={2}>
@@ -72,13 +73,23 @@ class AvatarComp extends Component {
                       className={classes.paper}
                       styles={{ marginLeft: 20 }}
                     >
-                      repos: <br />
+                      <p
+                        style={{
+                          textAlign: "center",
+                          fontFamily: "serif"
+                        }}
+                      >
+                        repos:
+                      </p>
+
                       <p className={styles.title}> {totalRepos}</p>
                     </Paper>
                   </Grid>
                   <Grid item xs={2} off>
                     <Paper className={classes.paper}>
-                      commits: <br />
+                      <p style={{ textAlign: "center", fontFamily: "serif" }}>
+                        commits:
+                      </p>{" "}
                       <p className={styles.title}> {nbOfCommits}</p>
                     </Paper>
                   </Grid>
@@ -87,19 +98,37 @@ class AvatarComp extends Component {
                       className={classes.paper}
                       styles={{ marginLeft: 20 }}
                     >
-                      line Of Code: <br />
+                      <p style={{ textAlign: "center", fontFamily: "serif" }}>
+                        line Of Code:
+                      </p>{" "}
                       <p className={styles.title}> {lineOfCode}</p>
                     </Paper>
                   </Grid>
                   <Grid item xs={2} off>
                     <Paper className={classes.paper}>
-                      followers: <br />
+                      <p
+                        style={{
+                          textAlign: "center",
+                          fontFamily: "serif"
+                        }}
+                      >
+                        {" "}
+                        followers:
+                      </p>{" "}
                       <p className={styles.title}> {followers}</p>
                     </Paper>
                   </Grid>
                   <Grid item xs={2} off>
                     <Paper className={classes.paper}>
-                      following: <br />
+                      <p
+                        style={{
+                          textAlign: "center",
+                          fontFamily: "serif"
+                        }}
+                      >
+                        following:{" "}
+                      </p>
+
                       <p className={styles.title}> {following} </p>
                     </Paper>
                   </Grid>

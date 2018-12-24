@@ -4,17 +4,24 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.6.2",
+    "@material-ui/icons": "^3.0.1",
     "antd": "^3.11.2",
     "apollo-boost": "^0.1.22",
     "chart.js": "^2.7.3",
     "evergreen-ui": "^4.8.0",
     "graphql": "^14.0.2",
+    "install": "^0.12.2",
+    "npm": "^6.5.0",
     "react": "^16.6.3",
     "react-apollo": "^2.3.2",
+    "react-bootstrap": "^0.32.4",
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.6.3",
+    "react-loader-spinner": "^2.3.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.1"
+    "react-scripts": "2.1.1",
+    "react-scroll": "^1.7.10",
+    "react-scroll-to-component": "^1.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

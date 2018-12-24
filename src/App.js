@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import ApolloClient from "apollo-boost";
-import { ApolloProvider, Query } from "react-apollo";
-import gql from "graphql-tag";
+import { ApolloProvider } from "react-apollo";
 import "./App.css";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
 import AvatarComp from "./components/avatar";
 import Languages from "./components/languages";
-// import Repositories from "./views/repositories";
+import Loader from "./components/loader";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import { Button } from "@material-ui/core";
 import Overview from "./components/overview";
 
 const client = new ApolloClient({
@@ -30,80 +29,77 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {},
-      isReady: false
+      displayTime: false
     };
   }
-  componentDidMount() {
-    client
-      .query({
-        query: gql`
-          query {
-            viewer {
-              avatarUrl
-              login
-              createdAt
 
-              repositories(first: 50, isFork: false) {
-                totalCount
-                nodes {
-                  nameWithOwner
-                  name
-                  url
-                  primaryLanguage {
-                    name
-                    color
-                  }
-                  languages(last: 5) {
-                    nodes {
-                      name
-                    }
-                  }
-                  collaborators(first: 10, affiliation: ALL) {
-                    totalCount
-                    edges {
-                      permission
-                      node {
-                        id
-                        login
-                        name
-                      }
-                    }
-                  }
-                  ref(qualifiedName: "master") {
-                    target {
-                      ... on Commit {
-                        history {
-                          totalCount
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        `
-      })
-      .then(result => {
-        this.setState({ data: result.data.viewer, isReady: true });
-      });
-    // console.log(result.data);
+  scrollTo(value) {
+    var offsetHeight = document.getElementById(value).clientHeight;
+
+    if (value === "Overview") {
+      window.scroll(0, offsetHeight - 450);
+    } else if (value === "Avatar") {
+      console.log(offsetHeight);
+      window.scroll(0, offsetHeight - 100);
+    } else {
+      console.log(offsetHeight);
+      window.scroll(0, offsetHeight + 150);
+    }
   }
 
   render() {
-    const { data, isReady } = this.state;
-    return (
-      <ApolloProvider client={client}>
-        <div style={{ justify: "center" }}>
-          <div className="App">{isReady && <AvatarComp data={data} />}</div>
-          <div>{isReady && <Languages />}</div>
-          <div style={{ paddingTop: 20 }}>{isReady && <Overview />}</div>
+    const { displayTime } = this.state;
+    setTimeout(() => {
+      this.setState({
+        displayTime: true
+      });
+    }, 3000);
+    if (!displayTime) {
+      return (
+        <ApolloProvider client={client}>
+          <div className="loader" justify="center">
+            <Grid container xs={6}>
+              <Loader />
+            </Grid>
+          </div>
+        </ApolloProvider>
+      );
+    } else {
+      return (
+        <ApolloProvider client={client}>
+          <AppBar position="static">
+            <Toolbar>
+              <Button color="inherit" onClick={() => this.scrollTo("Avatar")}>
+                Avatar
+              </Button>
 
-          {/* <div>{isReady && <Repositories />}</div> */}
-        </div>
-      </ApolloProvider>
-    );
+              <Button color="inherit" onClick={() => this.scrollTo("Language")}>
+                Language
+              </Button>
+              <Button color="inherit" onClick={() => this.scrollTo("Overview")}>
+                Overview
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <div style={{ justify: "center" }}>
+            <div id="Avatar">
+              {" "}
+              <AvatarComp />
+            </div>
+            <div id="Overview" style={{ paddingTop: 20 }}>
+              <Overview />
+            </div>
+            <div id="Language">
+              {" "}
+              <Languages />
+            </div>
+
+            {/* <Repositories /> */}
+            {/* <div>{isReady && <Repositories />}</div> */}
+          </div>
+        </ApolloProvider>
+      );
+    }
   }
 }
 

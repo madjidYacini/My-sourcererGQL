@@ -1,3 +1,7 @@
 .App-menu {
   text-decoration: none;
 }
+.loader {
+  margin-top: auto;
+  margin-left: 50%;
+}
